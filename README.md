@@ -6,5 +6,9 @@
 * ~~Implementation of fragments XML (10-30 minutes)~~
 * ~~RecyclerView with fake info (30 minutes - 1 hour)~~
 * ~~RecyclerView with real info from Json (30 minutes - 1 hour)~~
-* Fragment, without info, by tapping an item fron the RecyclerView (30 minutes - 1 hour)
-* Fragment, with info from Json, by taping an item from the RecyclerView (1 - 1.5 hour)
+* ~~Fragment, without info, by tapping an item fron the RecyclerView (10 - 15 minutes)~~
+* ~~Fragment, with info from Json, by taping an item from the RecyclerView (1.5 - 2 hour)~~
+
+In conclusion, we have app, that parse JSON from server, implement RecycleView with CardView, and after tapping card app will open new fragment with more infо.
+
+P.S. App have disgusting design in "More info".
