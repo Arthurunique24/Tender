@@ -1,5 +1,6 @@
 package com.example.arthur.cardviewtenderfromjson;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -17,11 +17,13 @@ import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DataViewHolder>{
 
+    //here
+    private OnRecyclerViewItemClickListener mClickListener;
+
     public static class DataViewHolder extends RecyclerView.ViewHolder{
         CardView cardView;
         TextView textViewName;
         TextView textViewRegion;
-
 
         public DataViewHolder(View itemView) {
             super(itemView);
@@ -33,7 +35,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DataViewHolder>{
 
     private List<DataJSON> dataList;
 
-    RVAdapter(List<DataJSON> dataList){
+//    RVAdapter(List<DataJSON> dataList){
+//        this.dataList = dataList;
+//    }
+
+    RVAdapter(OnRecyclerViewItemClickListener listener,List<DataJSON> dataList){
+        mClickListener = listener;
         this.dataList = dataList;
     }
 
@@ -49,17 +56,30 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.DataViewHolder>{
         return dvh;
     }
 
+    private DataJSON getItem(int position){
+        return dataList.get(position);
+    }
+
     @Override
-    public void onBindViewHolder(DataViewHolder holder, int position) {
+    public void onBindViewHolder(DataViewHolder holder, final int position) {
         holder.textViewName.setText(dataList.get(position).getPierName());
         holder.textViewRegion.setText(dataList.get(position).getRegion());
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("myLog", "Click-clack");
+                Log.d("myLog", "Click-clack position " + position);
+                if (mClickListener != null){
+                    Log.d("myLog", "mClickListener != null");
+                    mClickListener.onClick(position);
+                } else {Log.d("myLog", "mClickListener = null");}
             }
         });
+    }
+
+    //here
+    public interface OnRecyclerViewItemClickListener {
+        void onClick(int parameter);
     }
 
     @Override

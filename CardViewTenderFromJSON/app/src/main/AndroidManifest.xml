@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CardViewFragment" />
-        <activity android:name=".DetailFragment"></activity>
+        <activity android:name=".DetailFragment" />
+        <activity android:name=".MoreDetailFragment"></activity>
     </application>
 
 </manifest>

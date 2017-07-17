@@ -3,9 +3,7 @@ package com.example.arthur.cardviewtenderfromjson;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,41 +23,39 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class CardViewFragment extends Fragment {
+public class CardViewFragment extends Fragment implements RVAdapter.OnRecyclerViewItemClickListener {
 
     public static final String TAG = "CardViewFragment";
 
+    Bundle bundle;
     private List<DataJSON> dataJSONList;
-    private RecyclerView recyclerView;
     RVAdapter rvAdapter;
+
+    MoreDetailFragment moreDetailFragment;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View rootView = inflater.inflate(R.layout.activity_card_view_fragment, container, false);
 
+        bundle = new Bundle();
+
+        moreDetailFragment = new MoreDetailFragment();
+
         dataJSONList = new ArrayList<>();
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
 
         loadDataFromServer();
-        //testData();
 
-        rvAdapter = new RVAdapter(dataJSONList);
+        rvAdapter = new RVAdapter(this, dataJSONList);
         recyclerView.setAdapter(rvAdapter);
 
         getActivity();
         return rootView;
-    }
-
-    private void testData(){
-        //dataJSONList.add(new DataJSON(0, "RiverIsland", "Moscow", "Moscow is the capital of Russia"));
-        //dataJSONList.add(new DataJSON(1, "kek", "Lol", "Scream"));
-        DataJSON data2 = new DataJSON(0, "RiverIsland", "Moscow", "Moscow is the capital of Russia");
-        dataJSONList.add(data2);
     }
 
     String strJson;
@@ -88,9 +84,6 @@ public class CardViewFragment extends Fragment {
                 super.onPostExecute(strJson);
                 Log.d("myLog", strJson);
 
-                //DataJSON data2 = new DataJSON(0, "RiverIsland", "Moscow", "Moscow is the capital of Russia");
-                //dataJSONList.add(data2);
-
                 try {
                     JSONArray jsonArray = new JSONArray(strJson);
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -101,7 +94,6 @@ public class CardViewFragment extends Fragment {
                         String region = object.getString("region");
                         String description = object.getString("description");
                         DataJSON data = new DataJSON(i, name, region, description);
-                        //nothing happens here
                         dataJSONList.add(data);
                     }
                 } catch (JSONException e) {
@@ -114,6 +106,21 @@ public class CardViewFragment extends Fragment {
         task.execute();
     }
 
+    @Override
+    public void onClick(int parameter) {
+        Log.d("myLog", "Click from CardViewFragment");
+
+        bundle.putInt("itemParameter", parameter);
+        bundle.putString("PierName", dataJSONList.get(parameter).getPierName());
+        bundle.putString("Region", dataJSONList.get(parameter).getRegion());
+        bundle.putString("Description", dataJSONList.get(parameter).getDescription());
+        moreDetailFragment.setArguments(bundle);
+
+        Log.d("myLog", "parametr = " + String.valueOf(parameter));
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, moreDetailFragment, MoreDetailFragment.TAG).commit();
+    }
 }
 
 
